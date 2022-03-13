@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\ProductRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\OneToOne;
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
 class Product
@@ -11,16 +12,20 @@ class Product
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private $id;
+    private int $id;
+
+    #[ORM\OneToOne(targetEntity: Order::class, cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(nullable: false)]
+    private OneToOne $order;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private $name;
+    private string $name;
 
     #[ORM\Column(type: 'float')]
-    private $price;
+    private float $price;
 
     #[ORM\Column(type: 'integer')]
-    private $quantity;
+    private int $quantity;
 
     public function getId(): ?int
     {
@@ -59,6 +64,18 @@ class Product
     public function setQuantity(int $quantity): self
     {
         $this->quantity = $quantity;
+
+        return $this;
+    }
+
+    public function getOrder(): ?Order
+    {
+        return $this->order;
+    }
+
+    public function setOrder(Order $order): self
+    {
+        $this->order = $order;
 
         return $this;
     }
