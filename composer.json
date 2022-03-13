@@ -58,6 +58,9 @@
         ],
         "post-update-cmd": [
             "@auto-scripts"
+        ],
+        "fix:code-style": [
+            "php-cs-fixer fix"
         ]
     },
     "conflict": {
