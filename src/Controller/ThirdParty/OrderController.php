@@ -46,7 +46,7 @@ class OrderController extends AbstractController
             $this->productRepository->add($this->getProduct($product, $order));
         }
 
-        return $this->json(['message' => 'Order was stored successfully'], Response::HTTP_OK);
+        return $this->json(['message' => 'Order was stored successfully'], Response::HTTP_CREATED);
     }
 
     #[Route('/order/update-delivery-date/{partnerId}/{orderId}', name: 'update-order-delivery-date', methods: 'PATCH')]
