@@ -1,11 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
 use App\Repository\OrderRepository;
 use DateTimeInterface;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\ORM\Mapping\OneToMany;
 
 #[ORM\Entity(repositoryClass: OrderRepository::class)]
 #[ORM\Table(name: '`order`')]
@@ -26,7 +29,12 @@ class Order
     private DateTimeInterface $delivery_date;
 
     #[ORM\OneToMany(mappedBy: 'order', targetEntity: Product::class)]
-    private OneToMany $products;
+    private $products;
+
+    public function __construct()
+    {
+        $this->products = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -69,8 +77,32 @@ class Order
         return $this;
     }
 
-    public function getProducts(): OneToMany
+    /**
+     * @return Collection<int, Product>
+     */
+    public function getProducts(): Collection
     {
         return $this->products;
+    }
+
+    public function addProduct(Product $product): self
+    {
+        if (!$this->products->contains($product)) {
+            $this->products[] = $product;
+            $product->setOrder($this);
+        }
+
+        return $this;
+    }
+
+    public function removeProduct(Product $product): self
+    {
+        if ($this->products->removeElement($product)) {
+            if ($product->getOrder() === $this) {
+                $product->setOrder(null);
+            }
+        }
+
+        return $this;
     }
 }
