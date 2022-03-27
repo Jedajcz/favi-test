@@ -4,25 +4,38 @@ declare(strict_types=1);
 
 namespace App\Controller\Requests;
 
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Type;
-use Symfony\Component\Validator\ConstraintViolationListInterface;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Symfony\Contracts\Service\Attribute\Required;
 
-class OrderRequest
+class OrderRequest extends BaseRequest
 {
-    #[Type('integer')]
-    protected $price;
+    #[Type('string')]
+    #[NotBlank]
+    #[Required]
+    protected $partner_id;
 
     #[Type('string')]
-    protected $name;
+    #[NotBlank]
+    #[Required]
+    protected $order_id;
 
-    public function __construct(
-        protected ValidatorInterface $validator
-    ) {
-    }
+    #[Type('string')]
+    #[NotBlank]
+    #[Required]
+    protected $delivery_date;
 
-    public function validate(): ConstraintViolationListInterface
+    #[Type('array')]
+    #[Required]
+    #[NotBlank]
+    protected $products;
+
+    public function setProperties(Request|array $request): void
     {
-        return $this->validator->validate($this);
+        $this->partner_id    = $request->request->get('partner_id');
+        $this->order_id      = $request->request->get('order_id');
+        $this->delivery_date = $request->request->get('delivery_date');
+        $this->products      = $request->request->all()['products'] ?? null;
     }
 }
