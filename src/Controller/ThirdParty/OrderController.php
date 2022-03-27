@@ -51,6 +51,11 @@ class OrderController extends AbstractController
     #[Route('/order/update-delivery-date/{partnerId}/{orderId}', name: 'update-order-delivery-date', methods: 'PATCH')]
     public function updateDeliveryDate(string $partnerId, string $orderId, Request $request)
     {
+        $errors = $this->orderRequest->validate($request, true);
+        if (0 < count($errors)) {
+            return $this->json($this->getErrorMessages($errors), Response::HTTP_BAD_REQUEST);
+        }
+
         if (null === $order = $this->orderRepository->findOneBy(['order_id' => $orderId, 'partner_id' => $partnerId])) {
             return $this->json(['message' => 'Order not found'], Response::HTTP_BAD_REQUEST);
         }

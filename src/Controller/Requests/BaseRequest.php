@@ -15,9 +15,13 @@ abstract class BaseRequest
     ) {
     }
 
-    public function validate(Request|array $request): ConstraintViolationListInterface
+    public function validate(Request|array $request, bool $onlyDeliveryDate = false): ConstraintViolationListInterface
     {
         $this->setProperties($request);
+
+        if ($onlyDeliveryDate) {
+            return $this->validator->validate(value: $this, groups: ['delivery_date']);
+        }
 
         return $this->validator->validate($this);
     }
