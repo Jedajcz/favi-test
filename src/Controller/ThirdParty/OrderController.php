@@ -12,6 +12,7 @@ use App\Repository\OrderRepository;
 use App\Repository\ProductRepository;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -28,7 +29,7 @@ class OrderController extends AbstractController
     }
 
     #[Route('/order', name: 'store-order', methods: 'POST')]
-    public function store(Request $request)
+    public function store(Request $request): JsonResponse
     {
         if (false !== $errors = $this->validate($request)) {
             return $this->json($this->getErrorMessages($errors), Response::HTTP_BAD_REQUEST);
@@ -49,7 +50,7 @@ class OrderController extends AbstractController
     }
 
     #[Route('/order/update-delivery-date/{partnerId}/{orderId}', name: 'update-order-delivery-date', methods: 'PATCH')]
-    public function updateDeliveryDate(string $partnerId, string $orderId, Request $request)
+    public function updateDeliveryDate(string $partnerId, string $orderId, Request $request): JsonResponse
     {
         $errors = $this->orderRequest->validate($request, true);
         if (0 < count($errors)) {
